@@ -25,4 +25,7 @@ frm;
 
 });
 $route->post("/register","welcomController#register");
+$route->get("/home",function(){
+   new \Wepesi\App\Core\View("home");
+});
 $route->run();
