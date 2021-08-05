@@ -1,7 +1,6 @@
 <?php
 
 namespace Wepesi\App\Core;
-
     class Route{
         private $_path;
         private $_collable;
@@ -40,7 +39,9 @@ namespace Wepesi\App\Core;
                     }     
                     call_user_func_array([$class_instance, $method], $this->_matches);
                 } else {
-                    return call_user_func_array($this->_collable, $this->_matches);
+                    if(isset($this->_collable) && is_callable($this->_collable, true)){
+                        return call_user_func_array($this->_collable, $this->_matches);
+                    }
                 }
             }catch(\Exception $ex){
                 echo $ex->getMessage();
