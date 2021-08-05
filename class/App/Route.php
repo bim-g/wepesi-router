@@ -28,8 +28,8 @@ namespace Wepesi\App\Core;
         function call(){
             if(is_string($this->_collable)){
                 // get teh class_name and the methode to be call
-                $params=explode("#",$this->_collable);
-                // Controller::useController($params[0]);
+                $params=explode("#",$this->_collable);   
+                var_dump($params[0]);             
                 $controller_file_name= new $params[0];
                 call_user_func_array([$controller_file_name,$params[1]],$this->_matches);
             }else{

@@ -1,4 +1,3 @@
 <?php
-include_once "../class/App/Router.php";
-include_once "../class/App/Route.php";
+include "../config/init.php";
 include "../route/index.php";
