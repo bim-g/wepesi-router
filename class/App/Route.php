@@ -26,15 +26,25 @@ namespace Wepesi\App\Core;
         }
 
         function call(){
-            if(is_string($this->_collable)){
-                // get teh class_name and the methode to be call
-                $params=explode("#",$this->_collable);   
-                var_dump($params[0]);             
-                $controller_file_name= new $params[0];
-                call_user_func_array([$controller_file_name,$params[1]],$this->_matches);
-            }else{
-                return call_user_func_array($this->_collable,$this->_matches);
-            }
+            try{
+                // get the class_name and the methode to be call
+                if (is_string($this->_collable)) {
+                    $params = explode("#", $this->_collable);
+                    $class=$params[0];$method=$params[1];
+                    if (!class_exists($class,true)) {
+                        throw new \Exception("class : <b> $class</b> is not defined.");
+                    }
+                    $class_instance = new $class;                        
+                    if(!method_exists($class_instance,$method)) {
+                        throw new \Exception("method :<b> $method</b> does not belong the class : <b> $class</b>.");
+                    }     
+                    call_user_func_array([$class_instance, $method], $this->_matches);
+                } else {
+                    return call_user_func_array($this->_collable, $this->_matches);
+                }
+            }catch(\Exception $ex){
+                echo $ex->getMessage();
+            }            
         }
         private function paramMatch($match){
             // 
