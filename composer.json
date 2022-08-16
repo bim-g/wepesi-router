@@ -1,6 +1,6 @@
 {
     "name": "wepesi/routing",
-    "description": "simple routing module for php",
+    "description": "Simple and lightweight php module to write clean route of a web application",
     "type": "library",
     "license": "Apache-2.0",
     "autoload": {
