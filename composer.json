@@ -1,0 +1,32 @@
+{
+    "name": "wepesi/routing",
+    "description": "simple routing module for php",
+    "type": "library",
+    "license": "Apache-2.0",
+    "autoload": {
+        "psr-4": {
+            "Wepesi\\Routing\\": "src/",
+            "Wepesi\\Controller\\": "demo/controller/",
+            "Wepesi\\Middlleware\\": "demo/middleware/"
+        }
+    },
+    "homepage": "https://github.com/bim-g/wepesi-router/issues",
+    "support": {
+        "email": "ibmussfb@gmail.com",
+        "issues": "https://github.com/bim-g/wepesi-router/issues",
+        "forum": "https://github.com/bim-g/wepesi-router",
+        "wiki": "https://github.com/bim-g/wepesi-router",
+        "docs": "https://github.com/bim-g/wepesi-router",
+        "source": "https://github.com/bim-g/wepesi-router"
+    },
+    "authors": [
+        {
+            "name": "bim-g",
+            "email": "ibmussafb@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "require": {
+        "php" : ">=7.4"
+    }
+}
