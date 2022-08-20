@@ -26,7 +26,7 @@ Built by  _([Boss Ibrahim Mussa](https://www.github.com/bim-g))_ and [Contributo
 ## Prerequisites/Requirements
 
 - PHP 7.4 or greater
-- [URL Rewriting](https://gist.github.com/bim-g/5332525)
+- [URL Rewriting]([https://gist.github.com/bim-g/5332525](https://github.com/bim-g/wepesi-router/blob/master/.htaccess))
 
 
 
