@@ -23,4 +23,10 @@ $router->group('/users', function () use ($router) {
             ->middleware([userValidation::class,'detail_user']);
     });
 });
+
+$router->set404('**',function(){
+    header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+    print('Not Found : ' . http_response_code());
+    exit;
+});
 $router->run();

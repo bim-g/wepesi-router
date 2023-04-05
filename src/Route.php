@@ -2,6 +2,9 @@
 
 namespace Wepesi\Routing;
 
+/**
+ *
+ */
 class Route{
     private string $_path;
     private $callable;
@@ -9,8 +12,9 @@ class Route{
     private array $_params;
     private array $_get_params, $middleware_tab;
     private bool $middleware_exist;
+    use ExecuteRouteTrait;
     /**
-     * @var mixed|null
+     * @return void
      */
     function __construct(string $path, $callable)
     {
@@ -54,11 +58,11 @@ class Route{
             if (count($this->middleware_tab) > 0) {
                 $this->middleware_exist = false;
                 foreach ($this->middleware_tab as $middleware) {
-                    $this->controllerMiddleware($middleware, true);
+                    $this->callControllerMiddleware($middleware, true,$this->_matches);
                 }
                 $this->middleware_tab = [];
             }
-            $this->controllerMiddleware($this->callable);
+            $this->callControllerMiddleware($this->callable,false,$this->_matches);
         } catch (\Exception $ex) {
             echo $ex->getMessage();
         }
@@ -73,7 +77,7 @@ class Route{
         if (isset($this->_params[$match[1]])) {
             return '(' . $this->_params[$match[1]] . ')';
         }
-        array_push($this->_get_params, $match[1]);
+        $this->_get_params[] = $match[1];
         return '([^/]+)';
     }
 
@@ -117,36 +121,5 @@ class Route{
     {
         $this->middleware_tab[] = $middleware;
         return $this;
-    }
-
-    /**
-     * @param $callable
-     * @param bool $is_middleware
-     */
-    private function controllerMiddleware($callable, bool $is_middleware = false): void
-    {
-        try {
-            if (is_string($callable) || is_array($callable)) {
-                $params = is_string($callable) ? explode('#', $callable) : $callable;
-                if (count($params) != 2) {
-                    throw new \Exception("Error : on class/method is not well defined");
-                }
-                $class_name = $params[0];
-                $class_method = $params[1];
-                $class_instance = new $class_name;
-                if (!method_exists($class_instance, $class_method)) {
-                    throw new \Exception("method : $class_method does not belong the class : $class_name.");
-                }
-                call_user_func_array([$class_instance, $class_method], $this->_matches);
-            } else {
-                if (isset($callable) && is_callable($callable, true)) {
-                    call_user_func_array($callable, $this->_matches);
-                }
-            }
-            return;
-        } catch (\Exception $ex) {
-            print_r($ex->getMessage());
-            exit();
-        }
     }
 }
