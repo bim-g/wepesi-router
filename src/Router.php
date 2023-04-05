@@ -2,6 +2,10 @@
 
 namespace Wepesi\Routing;
 
+use Wepesi\Resolver\Option;
+use Wepesi\Resolver\OptionsResolver;
+use Wepesi\Routing\Traits\ExecuteRouteTrait;
+
 /**
  * A lightweight and simple object-oriented PHP Router.
  */
@@ -12,6 +16,7 @@ class  Router
     private array $_nameRoute;
     private string $baseRoute;
     private $notFoundCallback;
+    private array $baseMiddleware;
 
     use ExecuteRouteTrait;
     function __construct()
@@ -21,6 +26,7 @@ class  Router
         $this->_nameRoute = [];
         $this->_url = $_SERVER['REQUEST_URI'];
         $this->notFoundCallback = null;
+        $this->baseMiddleware = [];
     }
 
     /**
@@ -72,17 +78,45 @@ class  Router
     }
 
     /**
-     * @param string $base_route
+     * @param $base_route
      * @param callable $callable
      */
-    function group(string $base_route, callable $callable): void
+    function group($base_route, callable $callable): void
     {
+        $pattern = $base_route;
+        if (is_array($base_route)) {
+            $resolver = new OptionsResolver([
+                    (new Option('pattern')),
+                    (new Option('middleware'))]
+            );
+            $option = $resolver->resolve($base_route);
+            if (!isset($option['pattern']) || !isset($option['middleware'])) {
+                $this->dumper($option);
+            }
+            $pattern = $base_route['pattern'] ?? '/';
+
+            if (isset($base_route['middleware'])) {
+                $this->baseMiddleware = $this->validateMiddleware($base_route['middleware']);
+            }
+        }
+
         $cur_base_route = $this->baseRoute;
-        $this->baseRoute .= $base_route;
+        $this->baseRoute .= $pattern;
         call_user_func($callable);
         $this->baseRoute = $cur_base_route;
     }
 
+    /**
+     * @param $middleware
+     * @return callable[]
+     */
+    private function validateMiddleware($middleware):array{
+        $valid_middleware = $middleware;
+        if((is_array($middleware) && count($middleware) == 2 && is_string($middleware[0]) && is_string($middleware[1])) || is_callable($middleware)){
+            $valid_middleware = [$middleware];
+        }
+        return $valid_middleware;
+    }
     /**
      * @param string $path
      * @param $callable $callable
@@ -95,7 +129,7 @@ class  Router
         $path = $this->baseRoute . '/' . trim($path, '/');
         $path = $this->baseRoute ? rtrim($path, '/') : $path;
 
-        $route = new Route($path, $callable);
+        $route = new Route($path, $callable,$this->baseMiddleware);
         $this->routes[$method][] = $route;
 
         if (is_string($callable) && $name == null) {
@@ -111,9 +145,9 @@ class  Router
     /**
      * @param string $name
      * @param array $params
-     * @return string
+     * @return void
      */
-    function url(string $name, array $params = []): string
+    function url(string $name, array $params = [])
     {
         try {
             if (!isset($this->_nameRoute[$name])) {
@@ -121,7 +155,7 @@ class  Router
             }
             return $this->_nameRoute[$name]->geturl($params);
         } catch (\Exception $ex) {
-            return $ex->getMessage();
+            $this->dumper($ex);
         }
     }
     /**
@@ -177,7 +211,7 @@ class  Router
                 $this->trigger404($this->notFoundCallback);
             }
         } catch (\Exception $ex) {
-            echo $ex->getMessage();
+            $this->dumper($ex);
         }
     }
 }
