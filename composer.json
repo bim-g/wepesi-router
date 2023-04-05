@@ -6,8 +6,8 @@
     "autoload": {
         "psr-4": {
             "Wepesi\\Routing\\": "src/",
-            "Wepesi\\Controller\\": "demo/controller/",
-            "Wepesi\\Middlleware\\": "demo/middleware/"
+            "Wepesi\\Controller\\": "example/controller/",
+            "Wepesi\\Middleware\\": "example/middleware/"
         }
     },
     "homepage": "https://github.com/bim-g/wepesi-router/issues",
@@ -28,6 +28,7 @@
     "minimum-stability": "dev",
     "require": {
         "php" : ">=7.4",
-        "ext-json": "*"
+        "ext-json": "*",
+        "wepesi/optionsresolver": "dev-master"
     }
 }

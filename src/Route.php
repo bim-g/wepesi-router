@@ -2,6 +2,9 @@
 
 namespace Wepesi\Routing;
 
+use Wepesi\Routing\Traits\ExecuteRouteTrait;
+use Wepesi\Routing\Traits\ExceptionTrait;
+
 /**
  *
  */
@@ -13,17 +16,18 @@ class Route{
     private array $_get_params, $middleware_tab;
     private bool $middleware_exist;
     use ExecuteRouteTrait;
+    use ExceptionTrait;
     /**
      * @return void
      */
-    function __construct(string $path, $callable)
+    function __construct(string $path, $callable,$middleware = null)
     {
         $this->_path = trim($path, '/');
         $this->callable = $callable;
         $this->_matches = [];
         $this->_params = [];
         $this->_get_params = [];
-        $this->middleware_tab = [];
+        $this->middleware_tab = $middleware ?? [];
         $this->middleware_exist = false;
     }
 
@@ -31,7 +35,7 @@ class Route{
      * @param string|null $url
      * @return bool
      */
-    function match(?string $url): bool
+    public function match(?string $url): bool
     {
         $url = trim($url, '/');
         $path = preg_replace_callback('#:([\w]+)#', [$this, 'paramMatch'], $this->_path);
@@ -52,7 +56,7 @@ class Route{
     /**
      *
      */
-    function call()
+    public function call()
     {
         try {
             if (count($this->middleware_tab) > 0) {
@@ -64,7 +68,7 @@ class Route{
             }
             $this->callControllerMiddleware($this->callable,false,$this->_matches);
         } catch (\Exception $ex) {
-            echo $ex->getMessage();
+            $this->dumper($ex);
         }
     }
 
@@ -86,7 +90,7 @@ class Route{
      * @param $regex
      * @return $this
      */
-    function with($param, $regex): Route
+    public function with($param, $regex): Route
     {
         $this->_params[$param] = str_replace('(', '(?:', $regex);
         return $this;
@@ -95,7 +99,7 @@ class Route{
     /**
      * @return array
      */
-    function getmatch(): array
+    public function getmatch(): array
     {
         return $this->_matches;
     }
@@ -104,7 +108,7 @@ class Route{
      * @param $params
      * @return array|string|string[]
      */
-    function getUrl($params)
+    public function getUrl($params)
     {
         $path = $this->_path;
         foreach ($params as $k => $v) {
@@ -117,7 +121,7 @@ class Route{
      * @param  $middleware
      * @return $this
      */
-    function middleware($middleware): Route
+    public function middleware($middleware): Route
     {
         $this->middleware_tab[] = $middleware;
         return $this;

@@ -1,9 +1,10 @@
 <?php
 
-namespace Wepesi\Routing;
+namespace Wepesi\Routing\Traits;
 
 trait ExecuteRouteTrait
 {
+    use ExceptionTrait;
     protected function callControllerMiddleware($callable, bool $is_middleware = false,array $matches = []): void
     {
         try {
@@ -17,26 +18,20 @@ trait ExecuteRouteTrait
                 $class_method = $params[1];
 
                 $reflexion = new \ReflectionClass($class_name);
-                if($reflexion->isInstantiable()){
+                if(!$reflexion->isInstantiable()){
                     throw new \Exception("Error : class $class_name is not instantiable");
                 }
                 $class_object = $reflexion->newInstance();
-
                 if (!method_exists($class_object, $class_method)) {
                     throw new \Exception("method : $class_method does not belong the class : $class_name.");
                 }
                 call_user_func_array([$class_object, $class_method], $matches);
-            } else {
-                if (isset($callable) && is_callable($callable, true)) {
-                    call_user_func_array($callable, $matches);
-                }
+
+            } elseif (isset($callable) && is_callable($callable, true)) {
+                call_user_func_array($callable, $matches);
             }
-            return;
         } catch (\Exception $ex) {
-            print('<pre>');
-            print_r($ex);
-            print('</pre>');
-            exit();
+            $this->dumper($ex);
         }
     }
 }
