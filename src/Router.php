@@ -2,20 +2,25 @@
 
 namespace Wepesi\Routing;
 
+/**
+ * A lightweight and simple object-oriented PHP Router.
+ */
 class  Router
 {
     private ?string $_url;
     private array $routes;
     private array $_nameRoute;
     private string $baseRoute;
+    private $notFoundCallback;
 
+    use ExecuteRouteTrait;
     function __construct()
     {
         $this->baseRoute = '';
         $this->routes = [];
         $this->_nameRoute = [];
         $this->_url = $_SERVER['REQUEST_URI'];
-        $this->namespace = "";
+        $this->notFoundCallback = null;
     }
 
     /**
@@ -119,9 +124,39 @@ class  Router
             return $ex->getMessage();
         }
     }
+    /**
+     * Set the 404 handling function.
+     *
+     * @param object|callable|string $match_fn The function to be executed
+     * @param null $callable
+     */
+    public function set404($match_fn,$callable = null)
+    {
+        if (!$callable) {
+            $this->notFoundCallback = $match_fn;
+        }else{
+            $this->notFoundCallback = $callable;
+        }
+    }
 
     /**
-     * @return mixed
+     * @return void
+     */
+    protected function trigger404($match = null){
+        if ($match) {
+            $this->callControllerMiddleware($match);
+        } else{
+            header('HTTP/1.1 404 Not Found');
+            header('Content-Type: application/json');
+            $result = [
+                'status' => '404',
+                'status_text' => 'route not defined'
+            ];
+            echo json_encode($result,true);
+        }
+    }
+    /**
+     * @return void
      */
     function run()
     {
@@ -139,9 +174,7 @@ class  Router
                 }
             }
             if (count($routesRequestMethod) === $i) {
-                header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-                print("Not Found : ".http_response_code());
-                exit;
+                $this->trigger404($this->notFoundCallback);
             }
         } catch (\Exception $ex) {
             echo $ex->getMessage();
