@@ -35,7 +35,7 @@ class Route{
      * @param string|null $url
      * @return bool
      */
-    function match(?string $url): bool
+    public function match(?string $url): bool
     {
         $url = trim($url, '/');
         $path = preg_replace_callback('#:([\w]+)#', [$this, 'paramMatch'], $this->_path);
@@ -56,7 +56,7 @@ class Route{
     /**
      *
      */
-    function call()
+    public function call()
     {
         try {
             if (count($this->middleware_tab) > 0) {
@@ -90,7 +90,7 @@ class Route{
      * @param $regex
      * @return $this
      */
-    function with($param, $regex): Route
+    public function with($param, $regex): Route
     {
         $this->_params[$param] = str_replace('(', '(?:', $regex);
         return $this;
@@ -99,7 +99,7 @@ class Route{
     /**
      * @return array
      */
-    function getmatch(): array
+    public function getmatch(): array
     {
         return $this->_matches;
     }
@@ -108,7 +108,7 @@ class Route{
      * @param $params
      * @return array|string|string[]
      */
-    function getUrl($params)
+    public function getUrl($params)
     {
         $path = $this->_path;
         foreach ($params as $k => $v) {
@@ -121,7 +121,7 @@ class Route{
      * @param  $middleware
      * @return $this
      */
-    function middleware($middleware): Route
+    public function middleware($middleware): Route
     {
         $this->middleware_tab[] = $middleware;
         return $this;

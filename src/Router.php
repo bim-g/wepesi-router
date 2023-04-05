@@ -36,7 +36,7 @@ class  Router
      * @param string|null $name
      * @return Route
      */
-    function get(string $path, $callable, ?string $name = null): Route
+    public function get(string $path, $callable, ?string $name = null): Route
     {
         return $this->add($path, $callable, 'GET', $name);
     }
@@ -48,7 +48,7 @@ class  Router
      * @param string|null $name
      * @return Route
      */
-    function post(string $path, $callable, ?string $name = null): Route
+    public function post(string $path, $callable, ?string $name = null): Route
     {
         return $this->add($path, $callable, 'POST', $name);
     }
@@ -60,7 +60,7 @@ class  Router
      * @param string|null $name
      * @return Route
      */
-    function delete(string $path, $callable, ?string $name = null): Route
+    public function delete(string $path, $callable, ?string $name = null): Route
     {
         return $this->add($path, $callable, 'DELETE', $name);
     }
@@ -72,7 +72,7 @@ class  Router
      * @param string|null $name
      * @return Route
      */
-    function put(string $path, $callable, ?string $name = null): Route
+    public function put(string $path, $callable, ?string $name = null): Route
     {
         return $this->add($path, $callable, 'PUT', $name);
     }
@@ -81,7 +81,7 @@ class  Router
      * @param $base_route
      * @param callable $callable
      */
-    function group($base_route, callable $callable): void
+    public function group($base_route, callable $callable): void
     {
         $pattern = $base_route;
         if (is_array($base_route)) {
@@ -147,7 +147,8 @@ class  Router
      * @param array $params
      * @return void
      */
-    function url(string $name, array $params = [])
+    public function url(string $name, array $params = [])
+
     {
         try {
             if (!isset($this->_nameRoute[$name])) {
@@ -192,7 +193,7 @@ class  Router
     /**
      * @return void
      */
-    function run()
+    public function run()
     {
         try {
             if (!isset($this->routes[$_SERVER['REQUEST_METHOD']])) {
