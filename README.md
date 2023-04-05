@@ -200,7 +200,15 @@ $router->group('/articles', function() use ($router) {
 
 });
 ```
-
+### `Setnotfound` route
+You can set your custom notfound output
+```php
+$router->set404('**',function(){
+    header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
+    print('Not Found : ' . http_response_code());
+    exit;
+});
+```
 
 ### `Class#Method` calls
 
@@ -250,7 +258,21 @@ $router->get('/admin/:id', function($id) {
 	print_r("Last middleware before Route function");
 });
 ```
-
+Groupe route middleware, you should set the `pattern` and the `middleware` in order to make it work.
+```php
+$router->group([
+'pattern'=>'/admin/:id',
+'middleware'=> function($id){
+	print_r("Groupe middleware");
+}
+], function($id) {
+    echo "admin id is:".$id;
+})->middleware(function($id){
+	print_r("First middleware");
+})->middleware(function($id){
+	print_r("Last middleware before Route function");
+});
+```
 ### Overriding the request method
 
 Use `X-HTTP-Method-Override` to override the HTTP Request Method. Only works when the original Request Method is `POST`. Allowed values for `X-HTTP-Method-Override` are `PUT`, `DELETE`, or `PATCH`.
