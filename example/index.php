@@ -17,11 +17,19 @@ $router->group('/users', function () use ($router) {
     $router->get('/', [userController::class,'get_users']);
     $router->group([
         'pattern'=>'/group',
-        'middleware' => [userValidation::class,'detail_user']
+        'middleware' => [userValidation::class,'validateUser']
     ],function () use($router){
         $router->get('/:id/detail', [userController::class, 'get_user_detail'])
             ->middleware([userController::class, 'userExist']);
         $router->get('/:id/delete', 'Wepesi\Controller\UserController#delete_user');
+    });
+});
+/**
+ *  API Group
+ */
+$router->api('/users',function() use ($router){
+    $router->get('/',function(){
+        echo 'this is users api route';
     });
 });
 /**

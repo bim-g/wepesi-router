@@ -10,4 +10,8 @@ class UserValidation
             exit;
         }
     }
+
+    function validateUser(){
+        // implement here your validation
+    }
 }
