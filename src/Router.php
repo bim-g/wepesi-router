@@ -1,4 +1,7 @@
 <?php
+/*
+ * Copyright (c) 2023. Wepesi inc.
+ */
 
 namespace Wepesi\Routing;
 
@@ -108,11 +111,11 @@ class  Router
     }
 
     public function api($base_route, callable $callable){
-        $patern = '/api';
+        $pattern = '/api';
         if(is_array($base_route)){
-            $base_route['pattern'] = $patern .'/'. trim($base_route['pattern'],'/');
+            $base_route['pattern'] = $pattern .'/'. trim($base_route['pattern'],'/');
         }else{
-            $base_route = $patern .'/'. trim($base_route,'/');
+            $base_route = $pattern .'/'. trim($base_route,'/');
         }
         return $this->group($base_route, $callable);
     }

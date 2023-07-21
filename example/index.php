@@ -1,4 +1,5 @@
 <?php
+
 use Wepesi\Controller\UserController;
 use Wepesi\Middleware\UserValidation;
 use Wepesi\Routing\Router;

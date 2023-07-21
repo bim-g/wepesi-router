@@ -1,4 +1,7 @@
 <?php
+/*
+ * Copyright (c) 2023. Wepesi inc.
+ */
 
 namespace Wepesi\Routing\Traits;
 
