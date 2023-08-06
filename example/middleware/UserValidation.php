@@ -14,7 +14,10 @@ class UserValidation
         }
     }
 
-    function validateUser(){
-        // implement here your validation
+    function validateId($id){
+        if (!filter_var($id, FILTER_VALIDATE_INT)) {
+            echo 'your id should be an integer';
+            exit;
+        }
     }
 }

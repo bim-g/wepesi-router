@@ -14,11 +14,13 @@ Built by  _([Boss Ibrahim Mussa](https://www.github.com/bim-g))_ and [Contributo
 - [Static Route Patterns](#route-patterns)
 - Dynamic Route Patterns: [Dynamic PCRE-based Route Patterns](#dynamic-pcre-based-route-patterns) or [Dynamic Placeholder-based Route Patterns](#dynamic-placeholder-based-route-patterns)
 - [Optional Route Subpatterns](#optional-route-subpatterns)
-- [Supports `X-HTTP-Method-Override` header](#overriding-the-request-method)
 - [Subrouting / Group Routing](#Subrouting-/-Groupe-Routing)
 - [Allowance of `Class@Method` calls](#classmethod-calls)
 - [Before Route Middlewares](#before-route-middlewares)
 - [Before Router Middlewares / Before App Middlewares](#before-router-middlewares)
+- [API Groupe Routing](#api-groupe-routing)
+- [Supports `X-HTTP-Method-Override` header](#overriding-the-request-method)
+- [Custom 404](#custom-404)
 - [Works fine in subfolders](#subfolder-support)
 
 
@@ -200,15 +202,7 @@ $router->group('/articles', function() use ($router) {
 
 });
 ```
-### `Setnotfound` route
-You can set your custom notfound output
-```php
-$router->set404('**',function(){
-    header($_SERVER['SERVER_PROTOCOL'] . ' 404 Not Found');
-    print('Not Found : ' . http_response_code());
-    exit;
-});
-```
+
 
 ### `Class#Method` calls
 
@@ -231,6 +225,7 @@ $router->get('/users/profile', \Wepesi\Controller\Users::profile());
 
 ```
 Note: In case you are using static method, dont pass as string or in array.
+
 ### Before Route Middleware
 
 `wepesi/routing` supports __Before Route Middlewares__, which are executed before the route handling is processed.
@@ -258,25 +253,57 @@ $router->get('/admin/:id', function($id) {
 	print_r("Last middleware before Route function");
 });
 ```
-Groupe route middleware, you should set the `pattern` and the `middleware` in order to make it work.
+### API Groupe Routing
+
+You can define your API route inside the api method, and will auto complet api route fro you.
 ```php
-$router->group([
-'pattern'=>'/admin/:id',
-'middleware'=> function($id){
-	print_r("Groupe middleware");
-}
-], function($id) {
-    echo "admin id is:".$id;
-})->middleware(function($id){
-	print_r("First middleware");
-})->middleware(function($id){
-	print_r("Last middleware before Route function");
+$router->api('/v1',function() use($router){
+    $router->group('/users',function() use($router){
+        $router->get('/',[appController::class,'getUsers']);
+    });
 });
+// output
+// /api/v1/users
 ```
+
 ### Overriding the request method
 
 Use `X-HTTP-Method-Override` to override the HTTP Request Method. Only works when the original Request Method is `POST`. Allowed values for `X-HTTP-Method-Override` are `PUT`, `DELETE`, or `PATCH`.
 
+### Custom 404
+
+The default 404 handler sets a 404 status code and exits. You can override this default 404 handler by using `$router->set404(callable);`
+
+```php
+$router->set404(function() {
+    header('HTTP/1.1 404 Not Found');
+    // ... do something special here
+});
+```
+
+You can also define multiple custom routes e.x. you want to define an `/api` route, you can print a custom 404 page:
+
+```php
+$router->set404('**)?', function() {
+    header('HTTP/1.1 404 Not Found');
+    header('Content-Type: application/json');
+
+    $jsonArray = array();
+    $jsonArray['status'] = "404";
+    $jsonArray['status_text'] = "route not defined";
+
+    echo json_encode($jsonArray);
+});
+```
+
+Also supported are `Class@Method` callables:
+
+```php
+$router->set404([appController::class,'notfound']);
+```
+The 404 handler will be executed when no route pattern was matched to the current URL.
+
+💡 You can also manually trigger the 404 handler by calling `$router->trigger404()`
 
 ## Integration with other libraries
 
@@ -306,6 +333,13 @@ $router->put('/movies/:username', function($username) {
     $_PUT  = array();
     parse_str(file_get_contents('php://input'), $_PUT);
     // ...
+});
+```
+
+## Subfolder support
+```php
+$router->api('/v1',function() use($router){
+    include __DIR__.'/router/users.php';
 });
 ```
 

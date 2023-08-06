@@ -1,0 +1,69 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "9bf28e1a3d8c2630b8d6c5f961923a9f",
+    "packages": [
+        {
+            "name": "wepesi/optionsresolver",
+            "version": "dev-master",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/bim-g/OptionsResolver.git",
+                "reference": "3bce1f7f9b2bf9e08e7b4d6c73bc6247777430da"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/bim-g/OptionsResolver/zipball/3bce1f7f9b2bf9e08e7b4d6c73bc6247777430da",
+                "reference": "3bce1f7f9b2bf9e08e7b4d6c73bc6247777430da",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=7.4"
+            },
+            "default-branch": true,
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Wepesi\\Resolver\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "Apache-2.0"
+            ],
+            "authors": [
+                {
+                    "name": "bim-g",
+                    "email": "ibmussafb@gmail.com"
+                }
+            ],
+            "description": "The OptionsResolver component helps you configure objects with option arrays. It supports default values, option constraints and lazy options.",
+            "support": {
+                "docs": "https://github.com/bim-g/OptionsResolver",
+                "email": "ibmussfb@gmail.com",
+                "forum": "https://github.com/bim-g/OptionsResolver",
+                "issues": "https://github.com/bim-g/OptionsResolver/issues",
+                "source": "https://github.com/bim-g/OptionsResolver",
+                "wiki": "https://github.com/bim-g/OptionsResolver"
+            },
+            "time": "2022-12-29T12:44:59+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "dev",
+    "stability-flags": {
+        "wepesi/optionsresolver": 20
+    },
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.4",
+        "ext-json": "*"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "2.2.0"
+}
