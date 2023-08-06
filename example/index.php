@@ -1,4 +1,5 @@
 <?php
+
 use Wepesi\Controller\UserController;
 use Wepesi\Middleware\UserValidation;
 use Wepesi\Routing\Router;
@@ -10,18 +11,30 @@ $router->get('/',function(){
 $router->get('/home',function (){
     echo 'Welcom Home';
 });
+
+$router->get('/users', [userController::class,'get_users']);
 /**
  * Group
  */
-$router->group('/users', function () use ($router) {
-    $router->get('/', [userController::class,'get_users']);
-    $router->group([
-        'pattern'=>'/group',
-        'middleware' => [userValidation::class,'detail_user']
-    ],function () use($router){
-        $router->get('/:id/detail', [userController::class, 'get_user_detail'])
-            ->middleware([userController::class, 'userExist']);
-        $router->get('/:id/delete', 'Wepesi\Controller\UserController#delete_user');
+
+$router->group([
+    'pattern'=>'/users',
+    'middleware' => [userValidation::class, 'validateId']
+],function () use($router){
+    $router->get('/:id/detail', [userController::class, 'get_user_detail'])
+        ->middleware([userController::class, 'userExist']);
+    $router->get('/:id/delete', 'Wepesi\Controller\UserController#delete_user');
+});
+/**
+ *  API Group
+ */
+$router->api('/users',function() use ($router){
+    $router->get('/',function(){
+        echo json_encode([
+            'status' => http_response_code(),
+            'message' => 'Welcom to Users API'
+        ],true);
+        exit();
     });
 });
 /**

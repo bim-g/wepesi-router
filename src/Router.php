@@ -1,4 +1,7 @@
 <?php
+/*
+ * Copyright (c) 2023. Wepesi inc.
+ */
 
 namespace Wepesi\Routing;
 
@@ -17,10 +20,11 @@ class  Router
     private string $baseRoute;
     private $notFoundCallback;
     private array $baseMiddleware;
-
+    private static  string $API_BaseRoute;
     use ExecuteRouteTrait;
     function __construct()
     {
+        self::$API_BaseRoute = '';
         $this->baseRoute = '';
         $this->routes = [];
         $this->_nameRoute = [];
@@ -106,6 +110,15 @@ class  Router
         $this->baseRoute = $cur_base_route;
     }
 
+    public function api($base_route, callable $callable){
+        $pattern = '/api';
+        if(is_array($base_route)){
+            $base_route['pattern'] = $pattern .'/'. trim($base_route['pattern'],'/');
+        }else{
+            $base_route = $pattern .'/'. trim($base_route,'/');
+        }
+        return $this->group($base_route, $callable);
+    }
     /**
      * @param $middleware
      * @return callable[]
