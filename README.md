@@ -212,8 +212,9 @@ We can route to the class action like so:
 $router->get('/users/:id', '\Wepesi\Controller\UserController#get_users_detail');
 ```
 or
+
 ```php
-$router->get('/users/:id', [\Wepesi\Controller\UserController::class,'get_users_detail']);
+$router->get('/users/:id', [\Example\Controller\UserController::class,'get_users_detail']);
 ```
 
 When a request matches the specified route URI, the `get_users` method on the `UserController` class will be executed. The defined route parameters will be passed to the class method.
@@ -221,7 +222,7 @@ When a request matches the specified route URI, the `get_users` method on the `U
 The method can be static(not-recommend)  or non-static (recommend). In case of a non-static method, a new instance of the class will be created.
 
 ```php
-$router->get('/users/profile', \Wepesi\Controller\Users::profile());
+$router->get('/users/profile', \Example\Controller\Users::profile());
 
 ```
 Note: In case you are using static method, dont pass as string or in array.

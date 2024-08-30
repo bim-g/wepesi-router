@@ -3,7 +3,7 @@
  * Copyright (c) 2023. Wepesi inc.
  */
 
-namespace Wepesi\Controller;
+namespace Example\Controller;
 
 
 class UserController

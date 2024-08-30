@@ -3,7 +3,7 @@
  * Copyright (c) 2023. Wepesi inc.
  */
 
-namespace Wepesi\Middleware;
+namespace Example\Middleware;
 
 class UserValidation
 {

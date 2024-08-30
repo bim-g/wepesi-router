@@ -1,7 +1,7 @@
 <?php
 
-use Wepesi\Controller\UserController;
-use Wepesi\Middleware\UserValidation;
+use Example\Controller\UserController;
+use Example\Middleware\UserValidation;
 use Wepesi\Routing\Router;
 
 $router = new Router();
