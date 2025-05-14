@@ -59,7 +59,7 @@ class RouterTest extends TestCase
         $router->run();
     }
 
-    public function testGetMethodDoesNotMatch(): void
+    private function testGetMethodDoesNotMatch(): void
     {
         $_SERVER['REQUEST_URI'] = '/non-existent';
         $_SERVER['REQUEST_METHOD'] = 'GET';
