@@ -5,25 +5,28 @@
 
 namespace Wepesi\Routing;
 
-use Wepesi\Routing\Traits\ExceptionTrait;
-use Wepesi\Routing\Traits\ExecuteRouteTrait;
+use Exception;
+use Wepesi\Routing\Providers\Contracts\RouteGateWayContract;
+use Wepesi\Routing\Providers\RouteProvider;
 
 /**
  *
  */
-class Route{
+
+
+class Route extends RouteProvider implements RouteGateWayContract
+{
     private string $_path;
     private $callable;
     private array $_matches;
     private array $_params;
     private array $_get_params, $middleware_tab;
     private bool $middleware_exist;
-    use ExecuteRouteTrait;
-    use ExceptionTrait;
+
     /**
      * @return void
      */
-    function __construct(string $path, $callable,$middleware = null)
+    function __construct(string $path, $callable, $middleware = null)
     {
         $this->_path = trim($path, '/');
         $this->callable = $callable;
@@ -65,13 +68,13 @@ class Route{
             if (count($this->middleware_tab) > 0) {
                 $this->middleware_exist = false;
                 foreach ($this->middleware_tab as $middleware) {
-                    $this->callControllerMiddleware($middleware, true,$this->_matches);
+                    $this->callControllerMiddleware($middleware, true, $this->_matches);
                 }
                 $this->middleware_tab = [];
             }
-            $this->callControllerMiddleware($this->callable,false,$this->_matches);
-        } catch (\Exception $ex) {
-            $this->dumper($ex);
+            $this->callControllerMiddleware($this->callable, false, $this->_matches);
+        } catch (Exception $ex) {
+            throw $ex;
         }
     }
 
@@ -93,7 +96,7 @@ class Route{
      * @param $regex
      * @return $this
      */
-    public function with($param, $regex): Route
+    public function with(string $param, string $regex): Route
     {
         $this->_params[$param] = str_replace('(', '(?:', $regex);
         return $this;
@@ -102,16 +105,16 @@ class Route{
     /**
      * @return array
      */
-    public function getmatch(): array
+    public function getMatch(): array
     {
         return $this->_matches;
     }
 
     /**
      * @param $params
-     * @return array|string|string[]
+     * @return string
      */
-    public function getUrl($params)
+    public function getUrl(array $params): string
     {
         $path = $this->_path;
         foreach ($params as $k => $v) {
@@ -124,7 +127,7 @@ class Route{
      * @param  $middleware
      * @return $this
      */
-    public function middleware($middleware): Route
+    public function middleware($middleware): RouteGateWayContract
     {
         $this->middleware_tab[] = $middleware;
         return $this;
